@@ -49,7 +49,7 @@ const renderFunction = function (data, classList = '') {
       <p class="country__row"><span>🗣️</span>${Object.values(
         data.languages
       )}</p>
-      <p class="country__row"><span>💰</span>${data.currencies.EUR.name}</p>
+      <p class="country__row"><span>💰</span>${data.currencies.name}</p>
     </div>
   </article>`;
 
@@ -161,6 +161,9 @@ const getCountryData = function (country) {
 
 */
 
+/*
+/// using country name API
+
 const getCountryData = function (country) {
   getJSON(`https://restcountries.com/v3.1/name/${country}`, 'Country not found')
     .then(data => {
@@ -188,3 +191,49 @@ const getCountryData = function (country) {
 btn.addEventListener('click', function () {
   getCountryData('portugal');
 });
+
+*/
+//challange 1
+/*
+
+const getCountryByRegion = function (country) {
+  console.log(country);
+  fetch(`https://restcountries.com/v3.1/name/${country}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      renderFunction(data[0]);
+    });
+};
+
+const WhereAmI = function (lat, lng) {
+  fetch(`https://geocode.xyz/${lat},${lng}?geoit=json`)
+    .then(response => {
+      if (response.status === 403)
+        throw new Error(`too fast request ${response.status}`);
+      return response.json();
+    })
+    .then(data => {
+      if (!data.city || !data.region)
+        throw new Error('city or region not found');
+
+      console.log(`you are in ${data.city}, ${data.region}`, data);
+      getCountryByRegion(data.country);
+
+      //   renderFunction(data.);
+    })
+    .catch(err => {
+      console.log(`${err.message} 🔥🔥🔥`);
+      renderError(`Something Went Wrong.. ${err.message} Please try again`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
+};
+
+WhereAmI(52.508, 13.381);
+WhereAmI(19.037, 72.873);
+WhereAmI(-33.933, 18.474);
+
+
+*/
