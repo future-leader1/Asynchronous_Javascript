@@ -58,7 +58,7 @@ const renderFunction = function (data, classList = '') {
 };
 const renderError = function (msg) {
   countriesContainer.insertAdjacentText('beforeend', msg);
-  //   countriesContainer.style.opacity = 1;
+  countriesContainer.style.opacity = 1;
 };
 
 const getJSON = function (url, errorMsg = 'Something went Wrong') {
@@ -413,6 +413,37 @@ createImg('img/img-1.jpg')
 
   */
 
-const whereAmI = async function (country) {
-  await fetch(`https://restcountries.com/v3.1/name/${country}`);
+const getPositon = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
 };
+const whereAmI = async function () {
+  try {
+    //geolocation
+    const pos = await getPositon();
+    const { latitude: lat, longitude: lng } = pos.coords;
+    //reverse geocoding
+    const geoCoding = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json`
+    );
+    if (!geoCoding.ok)
+      throw new Error('Problem Getting Location data 🔥🔥🔥🔥');
+    const dataGeo = await geoCoding.json();
+
+    const res = await fetch(
+      `https://restcountries.com/v3.1/name/${dataGeo.country}`
+    );
+    if (!res.ok) throw new Error('Country not Found');
+
+    const data = await res.json();
+    console.log(data);
+    renderFunction(data[0]);
+  } catch (err) {
+    console.error(`🔥🔥🔥🔥 ${err}`);
+    renderError(`🔥🔥🔥🔥 ${err.message}`);
+  }
+};
+whereAmI();
+whereAmI();
+whereAmI();
