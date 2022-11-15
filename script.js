@@ -267,14 +267,14 @@ const lotteryPromise = new Promise(function (reslove, reject) {
 //console.log();
 
 lotteryPromise.then(res => console.log(res)).catch(err => console.log(err));
-*/
+
 //promisifying Settimeout
 const wait = function (seconds) {
   return new Promise(function (reslove) {
     setTimeout(reslove, seconds * 1000);
   });
 };
-
+*/
 // wait(2)
 //   .then(() => {
 //     console.log('i waited 1 sec');
@@ -413,6 +413,9 @@ createImg('img/img-1.jpg')
 
   */
 
+/*
+  ////////////////
+
 const getPositon = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -497,7 +500,7 @@ const get3Countries = async function (c1, c2, c3) {
 
 get3Countries('portugal', 'canada', 'uzbekistan');
 
-*/
+
 
 //////////Pormise methods
 
@@ -527,6 +530,10 @@ Promise.race([
 ])
   .then(res => console.log(res[0]))
   .catch(err => console.error(err));
+
+  */
+
+/*
 
 /// Promise.AllSettled
 //returns all the settled promises. reject or resloved
@@ -572,3 +579,68 @@ Promise.race([
     console.error(err);
   }
 })();
+
+
+*/
+
+//### challange final
+const imageContainer = document.querySelector('.images');
+const wait = function (seconds) {
+  return new Promise(function (reslove) {
+    setTimeout(reslove, seconds * 1000);
+  });
+};
+
+const createImg = function (inputPath) {
+  return new Promise(function (reslove, reject) {
+    const s = document.createElement('img');
+    s.src = inputPath;
+
+    s.addEventListener('load', function () {
+      imageContainer.append(s);
+      reslove(s);
+    });
+    s.addEventListener('error', function () {
+      reject(new Error('Img not found'));
+    });
+  });
+};
+
+const loadNpass = async function (inputPath) {
+  try {
+    let img = await createImg(`img/img-1.jpg`);
+    console.log('img 1 has loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    ///laoding image 2
+    img = await createImg(`img/img-2.jpg`);
+    console.log('img 2 has loaded');
+    await wait(2);
+    img.style.display = 'none';
+
+    ///laodinfg imfg 3
+    img = await createImg(`img/img-3.jpg`);
+    console.log('img 3 has loaded');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.error(`🔥🔥🔥${err}`);
+  }
+};
+
+//loadNpass();
+
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImg(img));
+
+    const imgEl = await Promise.all(imgs);
+    console.log(imgEl);
+    imgEl.forEach(el => el.classList.add('parallel'));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+loadAll([`img/img-1.jpg`, `img/img-2.jpg`, `img/img-3.jpg`]);
