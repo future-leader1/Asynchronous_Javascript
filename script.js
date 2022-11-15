@@ -437,13 +437,63 @@ const whereAmI = async function () {
     if (!res.ok) throw new Error('Country not Found');
 
     const data = await res.json();
-    console.log(data);
+    //console.log(data);
     renderFunction(data[0]);
+
+    return `you are in ${dataGeo.city} , ${dataGeo.country}`;
   } catch (err) {
     console.error(`🔥🔥🔥🔥 ${err}`);
     renderError(`🔥🔥🔥🔥 ${err.message}`);
+
+    //reject promise returned form async functions
+    throw err;
   }
 };
-whereAmI();
-whereAmI();
-whereAmI();
+
+// whereAmI();
+// whereAmI();
+// const city = whereAmI();
+// console.log(city);
+
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: 🔥 ${err.message}`))
+//   .finally(() => console.log('3: finished getting loc'));
+
+/*
+
+(async function () {
+  console.log('1: will get location');
+  try {
+    const city = await whereAmI();
+    console.log(city);
+  } catch (err) {
+    console.log(`2:🔥 ${err.message}`);
+  }
+  console.log('3: finished getting loc');
+})();
+
+*/
+
+///promise.all bringing data at the same time. in paralel
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(`https://restcountries.com/v3.1/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v3.1/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v3.1/name/${c3}`);
+    // console.log([data1.capital, data2.capital, data3.capital]);
+
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v3.1/name/${c1}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c2}`),
+      getJSON(`https://restcountries.com/v3.1/name/${c3}`),
+    ]);
+    console.log(data.map(d => d[0].capital));
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+get3Countries('portugal', 'canada', 'uzbekistan');
+
+////Promise.race
