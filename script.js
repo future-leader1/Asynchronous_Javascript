@@ -474,7 +474,7 @@ const whereAmI = async function () {
 })();
 
 */
-
+/*
 ///promise.all bringing data at the same time. in paralel
 const get3Countries = async function (c1, c2, c3) {
   try {
@@ -494,6 +494,81 @@ const get3Countries = async function (c1, c2, c3) {
   }
 };
 
+
 get3Countries('portugal', 'canada', 'uzbekistan');
 
-////Promise.race
+*/
+
+//////////Pormise methods
+
+////Promise.race it returns that has been fatched faster. first settled promise
+
+(async function () {
+  const race = await Promise.race([
+    getJSON(`https://restcountries.com/v3.1/name/italy`),
+    getJSON(`https://restcountries.com/v3.1/name/france`),
+    getJSON(`https://restcountries.com/v3.1/name/uzbekistan`),
+  ]);
+
+  // console.log(race[0]);
+})();
+
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject('request took too long!!!');
+    }, s * 1000);
+  });
+};
+
+Promise.race([
+  getJSON(`https://restcountries.com/v3.1/name/uzbekistan`),
+  timeout(0.5),
+])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+
+/// Promise.AllSettled
+//returns all the settled promises. reject or resloved
+
+(async () => {
+  const data = await Promise.allSettled([
+    Promise.resolve('Success'),
+    Promise.reject('failed'),
+    Promise.resolve('Success'),
+    Promise.resolve('Another Succes'),
+  ]);
+  console.log('Promise.allSettled', data);
+})();
+
+(async () => {
+  try {
+    const data = await Promise.all([
+      Promise.resolve('Success'),
+      Promise.resolve('failed'),
+      Promise.resolve('Success'),
+      Promise.resolve('Another Succes'),
+    ]);
+
+    console.log('Promise.All data', data);
+  } catch (err) {
+    console.error(err);
+  }
+})();
+
+////Promise.any = [es2021]///it will take array of promise and return fullfilled one. it does not return rejected ones
+
+(async () => {
+  try {
+    const data = await Promise.any([
+      Promise.reject('Success'),
+      Promise.reject('failed'),
+      Promise.reject('Success'),
+      Promise.resolve('Another Succes'),
+    ]);
+
+    console.log('Promise.any data', data);
+  } catch (err) {
+    console.error(err);
+  }
+})();
